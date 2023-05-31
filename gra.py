@@ -14,6 +14,7 @@ ball_speed_y = 2
 
 player1_score = 0
 player2_score = 0
+start_game = False
 
 def draw_text():
     screen.draw.text(str(player1_score), center=(WIDTH / 4, 30), fontsize=60)
@@ -21,45 +22,56 @@ def draw_text():
 
 def draw():
     screen.clear()
-    player1.draw()
-    player2.draw()
-    screen.draw.line((WIDTH / 2, 0), (WIDTH / 2, HEIGHT), (255, 255, 255))
-    ball.draw()
-    draw_text()
+    if not start_game:
+        screen.blit('pong2023', (0,0))
+    else:
+        player1.draw()
+        player2.draw()
+        screen.draw.line((WIDTH / 2, 0), (WIDTH / 2, HEIGHT), (255, 255, 255))
+        ball.draw()
+        draw_text()
 
 def update():
     global ball_speed_x
     global ball_speed_y
     global player1_score
     global player2_score
+    global start_game
     ball.x += ball_speed_x
     ball.y += ball_speed_y
     
-    if ball.y > HEIGHT or ball.y < 0:
-        ball_speed_y *= -1
-    if ball.x >= WIDTH or ball.x <= 0:
-        ball_speed_x *= -1
-        if ball.x <= 0:
-            player2_score += 1
-        else:
-            player1_score += 1
-        ball.x = WIDTH / 2
-        ball.y = HEIGHT / 2
-        sleep(1)
+    if not start_game and keyboard.space:
+        start_game = True
+        player1_score = 0
+        player2_score = 0
     
-    if ball.colliderect(player1) or ball.colliderect(player2):
-        ball_speed_x *= -1
+    if start_game:
     
-    #player1 move - w,s
-    if keyboard.w and player1.top > 0:
-        player1.y -= 5
-    if keyboard.s and player1.bottom < HEIGHT:
-        player1.y += 5
+        if ball.y > HEIGHT or ball.y < 0:
+            ball_speed_y *= -1
+        if ball.x >= WIDTH or ball.x <= 0:
+            ball_speed_x *= -1
+            if ball.x <= 0:
+                player2_score += 1
+            else:
+                player1_score += 1
+            ball.x = WIDTH / 2
+            ball.y = HEIGHT / 2
+            sleep(1)
         
-    #player2 move - up,down
-    if keyboard.up and player2.top > 0:
-        player2.y -= 5
-    if keyboard.down and player2.bottom < HEIGHT:
-        player2.y += 5
+        if ball.colliderect(player1) or ball.colliderect(player2):
+            ball_speed_x *= -1
+        
+        #player1 move - w,s
+        if keyboard.w and player1.top > 0:
+            player1.y -= 5
+        if keyboard.s and player1.bottom < HEIGHT:
+            player1.y += 5
+            
+        #player2 move - up,down
+        if keyboard.up and player2.top > 0:
+            player2.y -= 5
+        if keyboard.down and player2.bottom < HEIGHT:
+            player2.y += 5
 
 #pgzrun.go()
